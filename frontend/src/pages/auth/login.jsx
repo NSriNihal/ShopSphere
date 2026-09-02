@@ -95,44 +95,58 @@ function Login() {
         <>
             <Navbar />
 
-            <div className="min-h-screen bg-zinc-50 flex items-center justify-center px-4 py-12">
-                <div className="w-full max-w-4xl grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div className="hidden lg:flex flex-col justify-center items-start bg-emerald-600 rounded-lg p-8 text-white">
-                        <div className="flex items-center gap-3 mb-6">
-                            <div className="h-12 w-12 rounded-md bg-white/20 flex items-center justify-center text-white font-bold text-lg">
-                                <Logo size={12} />
-                            </div>
+            <div className="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top,_rgba(99,102,241,0.18),_transparent_40%),linear-gradient(180deg,#f8fafc_0%,#eef2ff_100%)] px-4 py-12">
+                <div className="grid w-full max-w-5xl grid-cols-1 gap-8 overflow-hidden rounded-3xl border border-slate-200 bg-white/80 shadow-[0_30px_80px_-30px_rgba(79,70,229,0.45)] backdrop-blur-xl lg:grid-cols-[1.1fr_1fr]">
+                    <div className="hidden flex-col justify-between bg-gradient-to-br from-indigo-600 via-violet-600 to-cyan-500 p-8 text-white lg:flex">
+                        <div className="flex items-center gap-3">
+                            <Logo size={12} />
                             <div>
-                                <h2 className="text-2xl font-bold">Shopez</h2>
-                                <p className="text-sm opacity-90">E-commerce Application</p>
+                                <h2 className="text-2xl font-bold tracking-tight">ShopSphere</h2>
+                                <p className="text-sm text-indigo-100">Multi-vendor marketplace</p>
                             </div>
                         </div>
 
-                        <h3 className="text-xl font-semibold mb-2">{isSignUp ? "Create your account" : "Welcome back"}</h3>
-                        <p className="text-sm opacity-90">Manage products, stores, and orders from one e-commerce workspace.</p>
+                        <div>
+                            <h3 className="mb-3 text-3xl font-semibold leading-tight">
+                                {isSignUp ? "Create your marketplace account" : "Welcome back to your storefront"}
+                            </h3>
+                            <p className="max-w-sm text-sm text-indigo-100">
+                                Manage products, stores, deliveries, and customer experiences from one elegant commerce workspace.
+                            </p>
+                        </div>
+
+                        <div className="flex gap-3 text-xs uppercase tracking-[0.22em] text-indigo-100">
+                            <span className="rounded-full border border-white/25 bg-white/10 px-3 py-1">Seller</span>
+                            <span className="rounded-full border border-white/25 bg-white/10 px-3 py-1">Buyer</span>
+                            <span className="rounded-full border border-white/25 bg-white/10 px-3 py-1">Delivery</span>
+                        </div>
                     </div>
 
-                    <div className="w-full bg-white border border-gray-200 rounded-lg p-8 shadow">
-                        <div className="mb-6 text-center">
-                            <div className="mx-auto">
+                    <div className="w-full p-7 md:p-10">
+                        <div className="mb-7 text-center">
+                            <div className="mx-auto flex justify-center">
                                 <Logo />
                             </div>
-                            <h1 className="text-2xl font-semibold mt-3 text-gray-900">{isSignUp ? "Create account" : "Welcome back"}</h1>
-                            <p className="text-sm text-gray-500 mt-1">E-commerce Application</p>
+                            <h1 className="mt-4 text-3xl font-bold tracking-tight text-slate-900">
+                                {isSignUp ? "Create account" : "Welcome back"}
+                            </h1>
+                            <p className="mt-2 text-sm text-slate-500">Your modern commerce hub</p>
                         </div>
 
-                        <div className="grid grid-cols-2 bg-zinc-100 rounded-md p-1 mb-6">
+                        <div className="mb-6 grid grid-cols-2 rounded-2xl bg-slate-100 p-1 shadow-inner">
                             <button
                                 type="button"
                                 onClick={() => setIsSignUp(false)}
-                                className={`py-2 rounded-md text-sm font-medium ${!isSignUp ? "bg-white text-zinc-900" : "text-gray-500"}`}>
+                                className={`rounded-xl py-2.5 text-sm font-semibold transition ${!isSignUp ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"}`}
+                            >
                                 Sign In
                             </button>
 
                             <button
                                 type="button"
                                 onClick={() => setIsSignUp(true)}
-                                className={`py-2 rounded-md text-sm font-medium ${isSignUp ? "bg-white text-zinc-900" : "text-gray-500"}`}>
+                                className={`rounded-xl py-2.5 text-sm font-semibold transition ${isSignUp ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"}`}
+                            >
                                 Sign Up
                             </button>
                         </div>
@@ -140,63 +154,63 @@ function Login() {
                         <form onSubmit={handleSubmit} className="space-y-4">
                             {isSignUp && (
                                 <div>
-                                    <label className="block text-sm mb-1 text-gray-700">Full Name</label>
+                                    <label className="mb-1 block text-sm font-medium text-slate-700">Full Name</label>
                                     <input
                                         type="text"
                                         name="fullName"
                                         value={formData.fullName}
                                         onChange={handleChange}
                                         required
-                                        className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-emerald-500"
+                                        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-slate-900 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100"
                                         placeholder="Enter full name"
                                     />
                                 </div>
                             )}
 
                             <div>
-                                <label className="block text-sm mb-1 text-gray-700">Email</label>
+                                <label className="mb-1 block text-sm font-medium text-slate-700">Email</label>
                                 <input
                                     type="email"
                                     name="email"
                                     value={formData.email}
                                     onChange={handleChange}
                                     required
-                                    className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-emerald-500"
+                                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-slate-900 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100"
                                     placeholder="Enter email"
                                 />
                             </div>
 
                             {isSignUp && (
                                 <div>
-                                    <label className="block text-sm mb-1 text-gray-700">Mobile</label>
+                                    <label className="mb-1 block text-sm font-medium text-slate-700">Mobile</label>
                                     <input
                                         type="text"
                                         name="mobile"
                                         value={formData.mobile}
                                         onChange={handleChange}
                                         required
-                                        className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-emerald-500"
+                                        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-slate-900 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100"
                                         placeholder="Enter mobile number"
                                     />
                                 </div>
                             )}
 
                             <div>
-                                <label className="block text-sm mb-1 text-gray-700">Password</label>
+                                <label className="mb-1 block text-sm font-medium text-slate-700">Password</label>
                                 <input
                                     type="password"
                                     name="password"
                                     value={formData.password}
                                     onChange={handleChange}
                                     required
-                                    className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-emerald-500"
+                                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-slate-900 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100"
                                     placeholder="Enter password"
                                 />
                             </div>
 
                             {isSignUp && (
                                 <div>
-                                    <label className="block text-sm mb-2 text-gray-700">Select Role</label>
+                                    <label className="mb-2 block text-sm font-medium text-slate-700">Select Role</label>
 
                                     <div className="grid grid-cols-3 gap-2">
                                         {[
@@ -208,7 +222,8 @@ function Login() {
                                                 key={role.value}
                                                 type="button"
                                                 onClick={() => setFormData({ ...formData, role: role.value })}
-                                                className={`py-2 rounded-md border text-sm ${formData.role === role.value ? "bg-emerald-500 border-emerald-500 text-white font-semibold" : "bg-white border-gray-200 text-gray-700"}`}>
+                                                className={`rounded-xl border py-2.5 text-sm font-semibold transition ${formData.role === role.value ? "border-indigo-500 bg-indigo-600 text-white shadow-sm" : "border-slate-200 bg-white text-slate-700 hover:border-indigo-200 hover:text-indigo-600"}`}
+                                            >
                                                 {role.label}
                                             </button>
                                         ))}
@@ -216,14 +231,14 @@ function Login() {
                                 </div>
                             )}
 
-                            {message && <p className="text-sm text-amber-500">{message}</p>}
+                            {message && <p className="text-sm font-medium text-amber-600">{message}</p>}
 
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-md disabled:opacity-60"
+                                className="mt-2 w-full rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/20 transition hover:from-indigo-500 hover:to-violet-500 disabled:cursor-not-allowed disabled:opacity-70"
                             >
-                                {loading ? "Please wait..." : isSignUp ? "Create Account" : "Sign In"}
+                                {loading ? "Please wait..." : isSignUp ? "Create account" : "Sign in"}
                             </button>
                         </form>
                     </div>

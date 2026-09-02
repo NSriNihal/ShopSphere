@@ -22,64 +22,64 @@ function Navbar() {
     }
 
     return (
-        <nav className="sticky top-0 z-50 bg-white border-b border-gray-200">
-            <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-                    <Link to={getDashboardLink()} className="flex items-center gap-2">
-                        <Logo />
-                        <div>
-                            <h1 className="text-lg font-semibold text-gray-900">
-                                Shopez
-                            </h1>
-                            <p className="text-xs text-gray-500">
-                                E-commerce Application
-                            </p>
-                        </div>
-                    </Link>
+        <nav className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/80 backdrop-blur-xl shadow-sm">
+            <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
+                <Link to={getDashboardLink()} className="flex items-center gap-3">
+                    <Logo />
+                    <div>
+                        <h1 className="text-lg font-bold tracking-tight text-slate-900">
+                            ShopSphere
+                        </h1>
+                        <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-slate-500">
+                            Marketplace
+                        </p>
+                    </div>
+                </Link>
 
                 {user && (
-                    <div className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-700">
+                    <div className="hidden items-center gap-6 text-sm font-medium text-slate-600 md:flex">
                         {user.role === "user" && (
-                             <>
-                             <Link to="/" className="hover:text-emerald-600">
-                             Stores
-                             </Link>
-                             <Link to="/my-orders" className="hover:text-emerald-600">
-                             My Orders
-                             </Link>
-                             <Link to="/profile" className="hover:text-emerald-600">
-                              Profile
-                            </Link>
+                            <>
+                                <Link to="/" className="transition hover:text-indigo-600">
+                                    Stores
+                                </Link>
+                                <Link to="/my-orders" className="transition hover:text-indigo-600">
+                                    My Orders
+                                </Link>
+                                <Link to="/profile" className="transition hover:text-indigo-600">
+                                    Profile
+                                </Link>
                             </>
                         )}
                         {user.role === "seller" && (
                             <>
-                                <Link to="/seller/dashboard" className="hover:text-emerald-600">
+                                <Link to="/seller/dashboard" className="transition hover:text-indigo-600">
                                     Dashboard
                                 </Link>
-                                <Link to="/seller/store" className="hover:text-emerald-600">
+                                <Link to="/seller/store" className="transition hover:text-indigo-600">
                                     Store
                                 </Link>
-                                <Link to="/seller/products" className="hover:text-emerald-600">
+                                <Link to="/seller/products" className="transition hover:text-indigo-600">
                                     Products
                                 </Link>
-                                <Link to="/seller/orders" className="hover:text-emerald-600">
+                                <Link to="/seller/orders" className="transition hover:text-indigo-600">
                                     Orders
                                 </Link>
-                                 <Link to="/seller/dispatch" className="hover:text-emerald-600">
+                                <Link to="/seller/dispatch" className="transition hover:text-indigo-600">
                                     Dispatch
-                                 </Link>
+                                </Link>
                             </>
                         )}
 
                         {user.role === "deliveryBoy" && (
                             <>
-                                <Link to="/delivery-boy/dashboard" className="hover:text-emerald-600">
+                                <Link to="/delivery-boy/dashboard" className="transition hover:text-indigo-600">
                                     Dashboard
                                 </Link>
-                                <Link to="/delivery-boy/orders" className="hover:text-emerald-600">
+                                <Link to="/delivery-boy/orders" className="transition hover:text-indigo-600">
                                     Assigned Orders
                                 </Link>
-                                <Link to="/delivery-boy/earnings" className="hover:text-emerald-600">
+                                <Link to="/delivery-boy/earnings" className="transition hover:text-indigo-600">
                                     Earnings
                                 </Link>
                             </>
@@ -87,16 +87,16 @@ function Navbar() {
 
                         {user.role === "admin" && (
                             <>
-                                <Link to="/admin/dashboard" className="hover:text-emerald-600">
+                                <Link to="/admin/dashboard" className="transition hover:text-indigo-600">
                                     Dashboard
                                 </Link>
-                                <Link to="/admin/users" className="hover:text-emerald-600">
+                                <Link to="/admin/users" className="transition hover:text-indigo-600">
                                     Users
                                 </Link>
-                                <Link to="/admin/orders" className="hover:text-emerald-600">
+                                <Link to="/admin/orders" className="transition hover:text-indigo-600">
                                     Orders
                                 </Link>
-                                <Link to="/admin/stores" className="hover:text-emerald-600">
+                                <Link to="/admin/stores" className="transition hover:text-indigo-600">
                                     Stores
                                 </Link>
                             </>
@@ -107,18 +107,16 @@ function Navbar() {
                 <div className="flex items-center gap-3">
                     {user ? (
                         <>
-                            <div className="hidden sm:block text-right">
-                                <p className="text-sm font-medium text-gray-900">
-                                    {user.fullName}
-                                </p>
-                                <p className="text-xs capitalize text-gray-500">
+                            <div className="hidden text-right sm:block">
+                                <p className="text-sm font-semibold text-slate-900">{user.fullName}</p>
+                                <p className="text-[11px] capitalize tracking-[0.16em] text-slate-500">
                                     {user.role}
                                 </p>
                             </div>
 
                             <button
                                 onClick={handleLogout}
-                                className="px-4 py-2 rounded-md bg-gray-900 text-white text-sm font-medium hover:bg-gray-800"
+                                className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-600"
                             >
                                 Logout
                             </button>
