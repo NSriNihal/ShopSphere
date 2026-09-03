@@ -31,8 +31,10 @@ const allowedOrigins = [
     "http://localhost:5173",
     "http://localhost:5174",
     "http://localhost:5175",
+    "http://localhost:8000",
     "https://shopez.vercel.app",
-    "https://shopez-peach.vercel.app"
+    "https://shopez-peach.vercel.app",
+    "https://shop-sphere-brown-delta.vercel.app"
 ]
 
 app.use(cors({

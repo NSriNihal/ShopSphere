@@ -59,6 +59,7 @@ function Home() {
     const [loading, setLoading] = useState(true)
     const [message, setMessage] = useState("")
     const [cartPulse, setCartPulse] = useState(false)
+    const [selectedProduct, setSelectedProduct] = useState(null)
 
     const fetchStores = async () => {
         setLoading(true)
@@ -471,6 +472,7 @@ function Home() {
                                         onAdd={(p) => { addToCart(p); setCartOpen(true) }}
                                         onIncrease={increaseQty}
                                         onDecrease={decreaseQty}
+                                        onClick={() => setSelectedProduct(product)}
                                     />
                                 ))}
                             </div>
@@ -696,17 +698,71 @@ function Home() {
                     </aside>
                 </>
             )}
+
+            {selectedProduct && (
+                <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+                    <button type="button" aria-label="Close modal" className="absolute inset-0 bg-black/60 backdrop-blur-sm z-0" onClick={() => setSelectedProduct(null)} />
+                    <div className="relative bg-white rounded-3xl overflow-hidden max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl ss-fade-in z-10">
+                        <button
+                            type="button"
+                            onClick={() => setSelectedProduct(null)}
+                            className="absolute top-4 right-4 h-10 w-10 bg-black/20 hover:bg-black/40 text-white rounded-full flex items-center justify-center text-xl transition-colors z-20"
+                        >✕</button>
+                        
+                        <div className="flex-1 overflow-y-auto">
+                            <div className="w-full h-80 relative bg-slate-100">
+                                {selectedProduct.image ? (
+                                    <img src={selectedProduct.image} alt={selectedProduct.name} className="w-full h-full object-cover" />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center text-6xl">📦</div>
+                                )}
+                            </div>
+                            <div className="p-8">
+                                <h2 className="text-3xl font-800 text-slate-900 mb-2">{selectedProduct.name}</h2>
+                                <p className="text-indigo-600 font-700 text-lg mb-4">{selectedProduct.store?.name}</p>
+                                <div className="flex items-center gap-4 mb-6">
+                                    <span className="text-2xl font-800 text-slate-900">₹{selectedProduct.price}</span>
+                                    <span className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full font-600 text-sm">Stock: {selectedProduct.stock}</span>
+                                </div>
+                                <p className="text-slate-600 leading-relaxed text-base mb-6">
+                                    {selectedProduct.description || "No description available for this product."}
+                                </p>
+                                
+                                <div className="mt-8 pt-6 border-t border-slate-100">
+                                    {cart[selectedProduct._id] ? (
+                                        <div className="flex items-center justify-between rounded-xl overflow-hidden text-white w-48" style={{ background: "linear-gradient(135deg, #6366f1, #8b5cf6)" }}>
+                                            <button type="button" onClick={() => decreaseQty(selectedProduct._id)} className="flex-1 py-3 text-2xl font-700 hover:bg-white/10 transition-colors">−</button>
+                                            <span className="min-w-10 text-center text-lg font-800">{cart[selectedProduct._id].quantity}</span>
+                                            <button type="button" onClick={() => increaseQty(selectedProduct)} disabled={cart[selectedProduct._id].quantity >= selectedProduct.stock} className="flex-1 py-3 text-2xl font-700 hover:bg-white/10 transition-colors disabled:opacity-40">+</button>
+                                        </div>
+                                    ) : (
+                                        <button
+                                            type="button"
+                                            onClick={() => { addToCart(selectedProduct); setCartOpen(true); setSelectedProduct(null); }}
+                                            disabled={selectedProduct.stock === 0}
+                                            className="px-8 py-3.5 text-lg font-700 rounded-xl transition-all duration-200 text-white shadow-lg disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-xl hover:scale-105 active:scale-95"
+                                            style={{ background: "linear-gradient(135deg,#6366f1,#8b5cf6)" }}
+                                        >
+                                            {selectedProduct.stock === 0 ? "Out of Stock" : "Add to Cart"}
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </MainLayout>
     )
 }
 
 /* ── Product card component ── */
-function ProductCard({ product, cart, onAdd, onIncrease, onDecrease }) {
+function ProductCard({ product, cart, onAdd, onIncrease, onDecrease, onClick }) {
     const inCart = cart[product._id]
     const [wished, setWished] = useState(false)
 
     return (
-        <div className="ss-card overflow-hidden flex flex-col">
+        <div className="ss-card overflow-hidden flex flex-col cursor-pointer transition-transform hover:-translate-y-1" onClick={onClick}>
             {/* Image */}
             <div className="relative overflow-hidden" style={{ height: 180 }}>
                 {product.image ? (
@@ -722,7 +778,7 @@ function ProductCard({ product, cart, onAdd, onIncrease, onDecrease }) {
                 {/* Wishlist heart */}
                 <button
                     type="button"
-                    onClick={() => setWished((w) => !w)}
+                    onClick={(e) => { e.stopPropagation(); setWished((w) => !w) }}
                     className="absolute top-2.5 right-2.5 h-8 w-8 rounded-full bg-white/90 flex items-center justify-center text-base shadow-sm hover:scale-110 transition-transform"
                     aria-label="Wishlist"
                 >
@@ -769,14 +825,14 @@ function ProductCard({ product, cart, onAdd, onIncrease, onDecrease }) {
                             className="flex items-center justify-between rounded-xl overflow-hidden text-white"
                             style={{ background: "linear-gradient(135deg, #6366f1, #8b5cf6)" }}
                         >
-                            <button type="button" onClick={() => onDecrease(product._id)} className="flex-1 py-2.5 text-lg font-700 hover:bg-white/10 transition-colors">−</button>
+                            <button type="button" onClick={(e) => { e.stopPropagation(); onDecrease(product._id) }} className="flex-1 py-2.5 text-lg font-700 hover:bg-white/10 transition-colors">−</button>
                             <span className="min-w-10 text-center text-sm font-800">{inCart.quantity}</span>
-                            <button type="button" onClick={() => onIncrease(product)} disabled={inCart.quantity >= product.stock} className="flex-1 py-2.5 text-lg font-700 hover:bg-white/10 transition-colors disabled:opacity-40">+</button>
+                            <button type="button" onClick={(e) => { e.stopPropagation(); onIncrease(product) }} disabled={inCart.quantity >= product.stock} className="flex-1 py-2.5 text-lg font-700 hover:bg-white/10 transition-colors disabled:opacity-40">+</button>
                         </div>
                     ) : (
                         <button
                             type="button"
-                            onClick={() => onAdd(product)}
+                            onClick={(e) => { e.stopPropagation(); onAdd(product) }}
                             disabled={product.stock === 0}
                             className="w-full py-2.5 text-sm font-700 rounded-xl transition-all duration-200 border-2 disabled:opacity-50 disabled:cursor-not-allowed hover:text-white"
                             style={{
