@@ -1,11 +1,22 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import Navbar from "../../components/common/Navbar"
 import Logo from "../../components/common/Logo"
 import { apiUrl } from "../../api/apiUrl"
 import { useAuth } from "../../context/AuthContext"
 
 const API_URL = apiUrl("/auth")
+
+const ROLES = [
+    { label: "Customer", value: "user",        icon: "🛒", desc: "Browse & shop" },
+    { label: "Seller",   value: "seller",      icon: "🏪", desc: "Manage store"  },
+    { label: "Delivery", value: "deliveryBoy", icon: "🚚", desc: "Deliver orders" }
+]
+
+const FEATURES = [
+    { icon: "🛍️", title: "Multi-vendor shopping", desc: "Discover thousands of products from verified sellers." },
+    { icon: "⚡", title: "Instant checkout",       desc: "Smart cart with address detection and quick payments." },
+    { icon: "📦", title: "Live order tracking",   desc: "Track every order from dispatch to doorstep in real time." },
+]
 
 function Login() {
     const navigate = useNavigate()
@@ -13,6 +24,7 @@ function Login() {
     const [isSignUp, setIsSignUp] = useState(false)
     const [loading, setLoading] = useState(false)
     const [message, setMessage] = useState("")
+    const [isError, setIsError] = useState(false)
 
     const [formData, setFormData] = useState({
         fullName: "",
@@ -28,36 +40,22 @@ function Login() {
     }
 
     useEffect(() => {
-        if (authLoading || !user) {
-            return
-        }
+        if (authLoading || !user) return
 
-        if (user.role === "seller") {
-            navigate("/seller/dashboard", { replace: true })
-            return
-        }
-
-        if (user.role === "deliveryBoy") {
-            navigate("/delivery-boy/dashboard", { replace: true })
-            return
-        }
-
-        if (user.role === "admin") {
-            navigate("/admin/dashboard", { replace: true })
-            return
-        }
-
-        navigate("/", { replace: true })
+        if (user.role === "seller")      navigate("/seller/dashboard",       { replace: true })
+        else if (user.role === "deliveryBoy") navigate("/delivery-boy/dashboard", { replace: true })
+        else if (user.role === "admin")  navigate("/admin/dashboard",        { replace: true })
+        else navigate("/", { replace: true })
     }, [authLoading, navigate, user])
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         setLoading(true)
         setMessage("")
+        setIsError(false)
 
         try {
             const endpoint = isSignUp ? `${API_URL}/signup` : `${API_URL}/signin`
-
             const body = isSignUp
                 ? formData
                 : { email: formData.email, password: formData.password }
@@ -72,19 +70,20 @@ function Login() {
             const data = await res.json()
 
             if (!res.ok) {
+                setIsError(true)
                 setMessage(data.message || "Something went wrong")
                 return
             }
 
             login(data.user, data.token)
+            setMessage(data.message || "Success!")
 
-            setMessage(data.message || "Success")
-
-            if (data.user.role === "seller") navigate("/seller/dashboard", { replace: true })
+            if (data.user.role === "seller")      navigate("/seller/dashboard",       { replace: true })
             else if (data.user.role === "deliveryBoy") navigate("/delivery-boy/dashboard", { replace: true })
-            else if (data.user.role === "admin") navigate("/admin/dashboard", { replace: true })
+            else if (data.user.role === "admin")  navigate("/admin/dashboard",        { replace: true })
             else navigate("/", { replace: true })
-        } catch (error) {
+        } catch {
+            setIsError(true)
             setMessage("Server error. Please try again.")
         } finally {
             setLoading(false)
@@ -92,159 +91,237 @@ function Login() {
     }
 
     return (
-        <>
-            <Navbar />
+        <div
+            className="min-h-screen flex items-center justify-center px-4 py-12"
+            style={{
+                background: "radial-gradient(circle at 30% 20%, rgba(99,102,241,0.18), transparent 55%), radial-gradient(circle at 80% 80%, rgba(139,92,246,0.14), transparent 50%), linear-gradient(135deg, #f0f2ff 0%, #e8edfb 50%, #f5f0ff 100%)"
+            }}
+        >
+            {/* Floating background orbs */}
+            <div className="pointer-events-none fixed inset-0 overflow-hidden">
+                <div style={{ position:"absolute", top:"10%", left:"5%", width:320, height:320, borderRadius:"50%", background:"rgba(99,102,241,.07)", filter:"blur(60px)" }} />
+                <div style={{ position:"absolute", bottom:"15%", right:"8%", width:280, height:280, borderRadius:"50%", background:"rgba(139,92,246,.09)", filter:"blur(50px)" }} />
+            </div>
 
-            <div className="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top,_rgba(99,102,241,0.18),_transparent_40%),linear-gradient(180deg,#f8fafc_0%,#eef2ff_100%)] px-4 py-12">
-                <div className="grid w-full max-w-5xl grid-cols-1 gap-8 overflow-hidden rounded-3xl border border-slate-200 bg-white/80 shadow-[0_30px_80px_-30px_rgba(79,70,229,0.45)] backdrop-blur-xl lg:grid-cols-[1.1fr_1fr]">
-                    <div className="hidden flex-col justify-between bg-gradient-to-br from-indigo-600 via-violet-600 to-cyan-500 p-8 text-white lg:flex">
+            <div
+                className="relative w-full max-w-5xl overflow-hidden ss-scale-in"
+                style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    borderRadius: 28,
+                    boxShadow: "0 32px 96px rgba(99,102,241,.22), 0 8px 32px rgba(0,0,0,.08)",
+                    border: "1px solid rgba(255,255,255,.7)",
+                    background: "#fff"
+                }}
+            >
+                {/* ── Left brand panel ── */}
+                <div
+                    className="hidden lg:flex flex-col justify-between p-10 text-white relative overflow-hidden"
+                    style={{ background: "linear-gradient(145deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)" }}
+                >
+                    {/* Noise/mesh overlay */}
+                    <div style={{ position:"absolute", inset:0, background:"url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E\")", opacity:.5 }} />
+
+                    <div className="relative">
                         <div className="flex items-center gap-3">
                             <Logo size={12} />
                             <div>
-                                <h2 className="text-2xl font-bold tracking-tight">ShopSphere</h2>
-                                <p className="text-sm text-indigo-100">Multi-vendor marketplace</p>
+                                <h2 className="text-2xl font-800 tracking-tight">ShopSphere</h2>
+                                <p className="text-sm text-indigo-200 font-500">Multi-vendor marketplace</p>
                             </div>
                         </div>
+                    </div>
 
+                    <div className="relative space-y-8">
                         <div>
-                            <h3 className="mb-3 text-3xl font-semibold leading-tight">
-                                {isSignUp ? "Create your marketplace account" : "Welcome back to your storefront"}
+                            <h3 className="text-3xl font-800 leading-tight mb-3">
+                                {isSignUp
+                                    ? "Join the marketplace revolution"
+                                    : "Welcome back to your storefront"}
                             </h3>
-                            <p className="max-w-sm text-sm text-indigo-100">
+                            <p className="text-indigo-200 text-sm leading-relaxed max-w-xs">
                                 Manage products, stores, deliveries, and customer experiences from one elegant commerce workspace.
                             </p>
                         </div>
 
-                        <div className="flex gap-3 text-xs uppercase tracking-[0.22em] text-indigo-100">
-                            <span className="rounded-full border border-white/25 bg-white/10 px-3 py-1">Seller</span>
-                            <span className="rounded-full border border-white/25 bg-white/10 px-3 py-1">Buyer</span>
-                            <span className="rounded-full border border-white/25 bg-white/10 px-3 py-1">Delivery</span>
-                        </div>
-                    </div>
-
-                    <div className="w-full p-7 md:p-10">
-                        <div className="mb-7 text-center">
-                            <div className="mx-auto flex justify-center">
-                                <Logo />
-                            </div>
-                            <h1 className="mt-4 text-3xl font-bold tracking-tight text-slate-900">
-                                {isSignUp ? "Create account" : "Welcome back"}
-                            </h1>
-                            <p className="mt-2 text-sm text-slate-500">Your modern commerce hub</p>
-                        </div>
-
-                        <div className="mb-6 grid grid-cols-2 rounded-2xl bg-slate-100 p-1 shadow-inner">
-                            <button
-                                type="button"
-                                onClick={() => setIsSignUp(false)}
-                                className={`rounded-xl py-2.5 text-sm font-semibold transition ${!isSignUp ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"}`}
-                            >
-                                Sign In
-                            </button>
-
-                            <button
-                                type="button"
-                                onClick={() => setIsSignUp(true)}
-                                className={`rounded-xl py-2.5 text-sm font-semibold transition ${isSignUp ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"}`}
-                            >
-                                Sign Up
-                            </button>
-                        </div>
-
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            {isSignUp && (
-                                <div>
-                                    <label className="mb-1 block text-sm font-medium text-slate-700">Full Name</label>
-                                    <input
-                                        type="text"
-                                        name="fullName"
-                                        value={formData.fullName}
-                                        onChange={handleChange}
-                                        required
-                                        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-slate-900 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100"
-                                        placeholder="Enter full name"
-                                    />
-                                </div>
-                            )}
-
-                            <div>
-                                <label className="mb-1 block text-sm font-medium text-slate-700">Email</label>
-                                <input
-                                    type="email"
-                                    name="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    required
-                                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-slate-900 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100"
-                                    placeholder="Enter email"
-                                />
-                            </div>
-
-                            {isSignUp && (
-                                <div>
-                                    <label className="mb-1 block text-sm font-medium text-slate-700">Mobile</label>
-                                    <input
-                                        type="text"
-                                        name="mobile"
-                                        value={formData.mobile}
-                                        onChange={handleChange}
-                                        required
-                                        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-slate-900 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100"
-                                        placeholder="Enter mobile number"
-                                    />
-                                </div>
-                            )}
-
-                            <div>
-                                <label className="mb-1 block text-sm font-medium text-slate-700">Password</label>
-                                <input
-                                    type="password"
-                                    name="password"
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                    required
-                                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-slate-900 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100"
-                                    placeholder="Enter password"
-                                />
-                            </div>
-
-                            {isSignUp && (
-                                <div>
-                                    <label className="mb-2 block text-sm font-medium text-slate-700">Select Role</label>
-
-                                    <div className="grid grid-cols-3 gap-2">
-                                        {[
-                                            { label: "User", value: "user" },
-                                            { label: "Seller", value: "seller" },
-                                            { label: "Delivery", value: "deliveryBoy" }
-                                        ].map((role) => (
-                                            <button
-                                                key={role.value}
-                                                type="button"
-                                                onClick={() => setFormData({ ...formData, role: role.value })}
-                                                className={`rounded-xl border py-2.5 text-sm font-semibold transition ${formData.role === role.value ? "border-indigo-500 bg-indigo-600 text-white shadow-sm" : "border-slate-200 bg-white text-slate-700 hover:border-indigo-200 hover:text-indigo-600"}`}
-                                            >
-                                                {role.label}
-                                            </button>
-                                        ))}
+                        <div className="space-y-4">
+                            {FEATURES.map((f) => (
+                                <div key={f.title} className="flex items-start gap-3">
+                                    <span
+                                        className="flex-shrink-0 h-9 w-9 rounded-xl flex items-center justify-center text-lg"
+                                        style={{ background: "rgba(255,255,255,.15)" }}
+                                    >
+                                        {f.icon}
+                                    </span>
+                                    <div>
+                                        <p className="font-700 text-sm">{f.title}</p>
+                                        <p className="text-indigo-200 text-xs mt-0.5">{f.desc}</p>
                                     </div>
                                 </div>
-                            )}
+                            ))}
+                        </div>
+                    </div>
 
-                            {message && <p className="text-sm font-medium text-amber-600">{message}</p>}
-
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className="mt-2 w-full rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/20 transition hover:from-indigo-500 hover:to-violet-500 disabled:cursor-not-allowed disabled:opacity-70"
+                    <div className="relative flex gap-2">
+                        {["Seller", "Buyer", "Delivery"].map((r) => (
+                            <span
+                                key={r}
+                                className="text-xs font-700 uppercase tracking-[.18em] px-3 py-1.5 rounded-full"
+                                style={{ background: "rgba(255,255,255,.15)", border: "1px solid rgba(255,255,255,.22)" }}
                             >
-                                {loading ? "Please wait..." : isSignUp ? "Create account" : "Sign in"}
-                            </button>
-                        </form>
+                                {r}
+                            </span>
+                        ))}
                     </div>
                 </div>
+
+                {/* ── Right form panel ── */}
+                <div className="w-full p-8 md:p-10 flex flex-col justify-center">
+                    {/* Mobile logo */}
+                    <div className="flex justify-center mb-6 lg:hidden">
+                        <Logo />
+                    </div>
+
+                    {/* Tab toggle */}
+                    <div className="mb-7 rounded-2xl bg-slate-100 p-1 grid grid-cols-2 shadow-inner">
+                        {[
+                            { label: "Sign In", value: false },
+                            { label: "Sign Up", value: true }
+                        ].map((tab) => (
+                            <button
+                                key={tab.label}
+                                type="button"
+                                onClick={() => { setIsSignUp(tab.value); setMessage("") }}
+                                className={`rounded-xl py-2.5 text-sm font-700 transition-all duration-200 ${
+                                    isSignUp === tab.value
+                                        ? "bg-white text-slate-900 shadow-sm"
+                                        : "text-slate-500 hover:text-slate-700"
+                                }`}
+                            >
+                                {tab.label}
+                            </button>
+                        ))}
+                    </div>
+
+                    <div className="mb-6">
+                        <h1 className="text-2xl font-800 tracking-tight text-slate-900">
+                            {isSignUp ? "Create account" : "Welcome back"}
+                        </h1>
+                        <p className="text-sm text-slate-500 mt-1">
+                            {isSignUp ? "Join thousands of buyers and sellers" : "Your modern commerce hub"}
+                        </p>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        {isSignUp && (
+                            <div>
+                                <label className="ss-label">Full Name</label>
+                                <input
+                                    type="text"
+                                    name="fullName"
+                                    value={formData.fullName}
+                                    onChange={handleChange}
+                                    required
+                                    className="ss-input"
+                                    placeholder="John Doe"
+                                />
+                            </div>
+                        )}
+
+                        <div>
+                            <label className="ss-label">Email Address</label>
+                            <input
+                                type="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                required
+                                className="ss-input"
+                                placeholder="you@example.com"
+                            />
+                        </div>
+
+                        {isSignUp && (
+                            <div>
+                                <label className="ss-label">Mobile Number</label>
+                                <input
+                                    type="text"
+                                    name="mobile"
+                                    value={formData.mobile}
+                                    onChange={handleChange}
+                                    required
+                                    className="ss-input"
+                                    placeholder="+91 98765 43210"
+                                />
+                            </div>
+                        )}
+
+                        <div>
+                            <label className="ss-label">Password</label>
+                            <input
+                                type="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                required
+                                className="ss-input"
+                                placeholder="••••••••"
+                            />
+                        </div>
+
+                        {isSignUp && (
+                            <div>
+                                <label className="ss-label">I am a…</label>
+                                <div className="grid grid-cols-3 gap-2 mt-1">
+                                    {ROLES.map((role) => (
+                                        <button
+                                            key={role.value}
+                                            type="button"
+                                            onClick={() => setFormData({ ...formData, role: role.value })}
+                                            className={`flex flex-col items-center gap-1 py-3 rounded-xl border-2 text-xs font-700 transition-all duration-200 ${
+                                                formData.role === role.value
+                                                    ? "border-indigo-500 bg-indigo-50 text-indigo-700"
+                                                    : "border-slate-200 bg-white text-slate-600 hover:border-indigo-200 hover:bg-indigo-50/50"
+                                            }`}
+                                        >
+                                            <span className="text-xl">{role.icon}</span>
+                                            <span>{role.label}</span>
+                                            <span className="text-[9px] font-500 opacity-70">{role.desc}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {message && (
+                            <div
+                                className={`rounded-xl px-4 py-3 text-sm font-600 flex items-center gap-2 ${
+                                    isError
+                                        ? "bg-red-50 text-red-700 border border-red-100"
+                                        : "bg-emerald-50 text-emerald-700 border border-emerald-100"
+                                }`}
+                            >
+                                <span>{isError ? "⚠️" : "✅"}</span>
+                                {message}
+                            </div>
+                        )}
+
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="ss-btn-primary w-full py-3 text-sm mt-2"
+                        >
+                            {loading ? (
+                                <>
+                                    <span className="ss-spinner" />
+                                    Please wait…
+                                </>
+                            ) : isSignUp ? "Create account →" : "Sign in →"}
+                        </button>
+                    </form>
+                </div>
             </div>
-        </>
+        </div>
     )
 }
 
