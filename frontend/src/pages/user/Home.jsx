@@ -447,13 +447,7 @@ function Home() {
             <button
                 type="button"
                 onClick={() => setCartOpen(true)}
-                aria-label={`Open cart${cartCount > 0 ? `, ${cartCount} item${cartCount > 1 ? "s" : ""}` : ""}`}
-                title="Open cart"
-                className="fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-5 z-[60] flex h-14 w-14 items-center justify-center rounded-full text-white transition-all duration-200 hover:scale-105 active:scale-95 sm:bottom-6 sm:right-6"
-                style={{
-                    background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
-                    boxShadow: "0 8px 32px rgba(99,102,241,.45)"
-                }}
+                className="ss-cart-dock fixed z-30 flex items-center gap-3 text-white"
             >
                 {/* Pulse ring when item added */}
                 {cartPulse && (
@@ -462,15 +456,15 @@ function Home() {
                         style={{ border: "2px solid rgba(99,102,241,.5)", animation: "pulse-ring 0.6s ease-out forwards" }}
                     />
                 )}
-                <span className="text-xl" aria-hidden="true">🛒</span>
+                <span className="ss-cart-dock-icon">🛒</span>
+                <span className="text-left">
+                    <span className="font-800 text-sm block leading-none">{cartCount > 0 ? "Your cart" : "Start a cart"}</span>
+                    <span className="text-xs font-500 opacity-85 block mt-1">{cartCount > 0 ? `${cartCount} item${cartCount > 1 ? "s" : ""} · ₹${grandTotal}` : "Add a product to begin"}</span>
+                </span>
                 {cartCount > 0 && (
-                    <span
-                        className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-xs font-800 text-indigo-700"
-                        style={{ background: "#fff", boxShadow: "0 2px 8px rgba(15,23,42,.24)" }}
-                    >
-                        {cartCount}
-                    </span>
+                    <span className="ss-cart-dock-count">{cartCount}</span>
                 )}
+                <span className="ss-cart-dock-action">View cart <span aria-hidden="true">→</span></span>
             </button>
 
             {/* ── Cart drawer ── */}
@@ -487,8 +481,8 @@ function Home() {
 
                     {/* Drawer */}
                     <aside
-                        className="fixed right-0 top-0 h-full z-50 flex flex-col ss-drawer"
-                        style={{ width: "min(420px, 100vw)", background: "#fff", boxShadow: "-8px 0 60px rgba(0,0,0,.18)" }}
+                        className="ss-cart-drawer fixed right-0 top-0 h-full z-50 flex flex-col ss-drawer"
+                        style={{ width: "min(420px, 100vw)" }}
                     >
                         {/* Drawer header */}
                         <div
@@ -561,7 +555,7 @@ function Home() {
                         </div>
 
                         {/* Cart footer */}
-                        <div className="border-t border-slate-100 p-4 space-y-3" style={{ background: "#fafbff" }}>
+                        <div className="ss-cart-footer border-t border-slate-100 p-4 space-y-3">
                             {/* Price summary */}
                             <div className="ss-card !transform-none p-4 space-y-2 !shadow-sm">
                                 <div className="flex items-center justify-between text-sm text-slate-600">
