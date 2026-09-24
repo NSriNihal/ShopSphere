@@ -27,6 +27,12 @@ const productSchema = new mongoose.Schema({
         required: true,
         default: 0
     },
+    variants: [{
+        name: { type: String, required: true },
+        options: [{ type: String }],
+        price: { type: Number },
+        stock: { type: Number, default: 0 }
+    }],
     category: {
         type: String,
         default: "general"
@@ -45,6 +51,11 @@ const productSchema = new mongoose.Schema({
     reviewCount: {
         type: Number,
         default: 0
+    },
+    moderationStatus: {
+        type: String,
+        enum: ["pending", "approved", "rejected"],
+        default: "pending"
     }
 }, { timestamps: true })
 

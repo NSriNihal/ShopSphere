@@ -241,7 +241,7 @@ export const getSellerDashboard = async (req, res) => {
 
         const pendingOrders = await Order.countDocuments({
             seller: req.userId,
-            status: "pending"
+            status: { $in: ["placed", "confirmed", "packed"] }
         })
 
         const deliveredOrders = await Order.countDocuments({

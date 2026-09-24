@@ -75,7 +75,7 @@ export const assignDeliveryBoy = async (req, res) => {
         const distanceInKm = calculateDistanceInKm(pickupLocation, dropLocation)
 
         order.deliveryBoy = deliveryBoyId
-        order.status = "assigned"
+        order.status = "shipped"
         await order.save()
 
         const dispatch = await Dispatch.create({
@@ -183,7 +183,7 @@ export const updateDispatchStatus = async (req, res) => {
         const order = await Order.findById(dispatch.order)
 
         if (order) {
-            order.status = status
+            order.status = status === "dispatched" ? "shipped" : status
             await order.save()
         }
 

@@ -59,14 +59,27 @@ const orderSchema = new mongoose.Schema({
         type:Number,
         required:true
     },
+    subtotal:{
+        type:Number,
+        required:true
+    },
     deliveryCharge:{
         type:Number,
         default:0
     },
     status:{
         type:String,
-        enum:["pending", "accepted", "assigned", "dispatched", "delivered", "cancelled"],
+        enum:["placed", "confirmed", "packed", "shipped", "delivered", "cancelled", "returned", "refunded"],
+        default:"placed"
+    },
+    paymentStatus:{
+        type:String,
+        enum:["pending", "paid", "refunded"],
         default:"pending"
+    },
+    couponCode:{
+        type:String,
+        trim:true
     },
     dispatchedAt:{
         type:Date

@@ -122,11 +122,11 @@ export const updateDeliveryStatus = async (req, res) => {
         const { orderId } = req.params
         const { status } = req.body
 
-        const allowedStatus = ["dispatched", "delivered"]
+        const allowedStatus = ["shipped", "delivered"]
 
         if (!allowedStatus.includes(status)) {
             return res.status(400).json({
-                message: "Invalid status. Use dispatched or delivered"
+                message: "Invalid status. Use shipped or delivered"
             })
         }
 
@@ -146,7 +146,7 @@ export const updateDeliveryStatus = async (req, res) => {
 
         order.status = status
 
-        if (status === "dispatched") {
+        if (status === "shipped") {
             order.dispatchedAt = new Date()
         }
 

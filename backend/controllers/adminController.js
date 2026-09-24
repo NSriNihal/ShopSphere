@@ -10,7 +10,7 @@ export const getAdminStats = async (req, res) => {
         const totalOrders = await Order.countDocuments()
         const totalDeliveryPartners = await User.countDocuments({ role: "deliveryBoy" })
 
-        const pendingOrders = await Order.countDocuments({ status: "pending" })
+        const pendingOrders = await Order.countDocuments({ status: { $in: ["placed", "confirmed", "packed"] } })
         const deliveredOrders = await Order.countDocuments({ status: "delivered" })
         const cancelledOrders = await Order.countDocuments({ status: "cancelled" })
 

@@ -23,6 +23,7 @@ import trackingRouter from "./routes/trackingRoutes.js"
 import deliveryBoyRouter from "./routes/deliveryBoyRoutes.js"
 import uploadRouter from "./routes/uploadRoute.js"
 import reviewRouter from "./routes/reviewRoutes.js"
+import platformRouter from "./routes/platformRoutes.js"
 
 const app = express()  //now we can access express functionalities through app
 app.set("trust proxy", 1)
@@ -65,6 +66,7 @@ app.use("/api/stores", storeRouter)
 app.use("/api/tracking", trackingRouter)
 app.use("/api/delivery-boy", deliveryBoyRouter)
 app.use("/api/reviews", reviewRouter)
+app.use("/api/platform", platformRouter)
 
 // Backward-compatible mounts for clients still calling non-/api paths.
 app.use("/user", userRouter)
