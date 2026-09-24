@@ -447,7 +447,9 @@ function Home() {
             <button
                 type="button"
                 onClick={() => setCartOpen(true)}
-                className="fixed bottom-6 right-6 z-30 flex items-center gap-3 rounded-2xl text-white px-5 py-3.5 transition-all duration-200 hover:scale-105 active:scale-95"
+                aria-label={`Open cart${cartCount > 0 ? `, ${cartCount} item${cartCount > 1 ? "s" : ""}` : ""}`}
+                title="Open cart"
+                className="fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-5 z-[60] flex h-14 w-14 items-center justify-center rounded-full text-white transition-all duration-200 hover:scale-105 active:scale-95 sm:bottom-6 sm:right-6"
                 style={{
                     background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
                     boxShadow: "0 8px 32px rgba(99,102,241,.45)"
@@ -460,17 +462,11 @@ function Home() {
                         style={{ border: "2px solid rgba(99,102,241,.5)", animation: "pulse-ring 0.6s ease-out forwards" }}
                     />
                 )}
-                <span className="text-xl">🛒</span>
-                <span>
-                    <span className="font-700 text-sm block leading-none">
-                        {cartCount > 0 ? `${cartCount} item${cartCount > 1 ? "s" : ""}` : "Cart"}
-                    </span>
-                    <span className="text-xs font-500 opacity-90 block mt-0.5">₹{grandTotal}</span>
-                </span>
+                <span className="text-xl" aria-hidden="true">🛒</span>
                 {cartCount > 0 && (
                     <span
-                        className="flex items-center justify-center h-5 w-5 rounded-full text-xs font-800 text-indigo-700"
-                        style={{ background: "#fff" }}
+                        className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-xs font-800 text-indigo-700"
+                        style={{ background: "#fff", boxShadow: "0 2px 8px rgba(15,23,42,.24)" }}
                     >
                         {cartCount}
                     </span>
