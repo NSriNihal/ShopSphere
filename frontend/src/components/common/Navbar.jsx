@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import Logo from "./Logo"
 import { useAuth } from "../../context/AuthContext"
+import ThemeToggle from "./ThemeToggle"
 
 function Navbar() {
     const navigate = useNavigate()
@@ -46,8 +47,7 @@ function Navbar() {
     const avatarGradient = gradientByRole[user?.role] || "from-indigo-500 to-blue-600"
 
     return (
-        <nav className="sticky top-0 z-50 border-b border-white/60 bg-white/75 backdrop-blur-2xl shadow-sm"
-             style={{ boxShadow: "0 1px 20px rgba(99,102,241,.08)" }}>
+        <nav className="ss-navbar sticky top-0 z-50 border-b backdrop-blur-2xl shadow-sm">
             <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2.5 md:px-6">
 
                 {/* Logo */}
@@ -102,6 +102,7 @@ function Navbar() {
 
                 {/* Right side */}
                 <div className="flex items-center gap-3">
+                    <ThemeToggle compact />
                     {user ? (
                         <>
                             {/* User avatar */}

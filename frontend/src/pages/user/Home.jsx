@@ -55,6 +55,7 @@ function Home() {
     const [newAddressData, setNewAddressData] = useState({ label: "", address: "", latitude: "", longitude: "" })
     const [locationStatus, setLocationStatus] = useState("")
     const [keyword, setKeyword] = useState("")
+    const [activeCategory, setActiveCategory] = useState("all")
     const [featuredIndex, setFeaturedIndex] = useState(0)
     const [loading, setLoading] = useState(true)
     const [message, setMessage] = useState("")
@@ -198,24 +199,26 @@ function Home() {
     const canPlaceOrder = cartItems.length > 0 && addressSelected
     const normalizedKeyword = keyword.trim().toLowerCase()
 
-    const filteredStores = useMemo(() => {
-        if (!normalizedKeyword) return stores
-        return stores.filter((s) =>
-            (s.name || "").toLowerCase().includes(normalizedKeyword) ||
-            (s.category || "").toLowerCase().includes(normalizedKeyword) ||
-            (s.address || "").toLowerCase().includes(normalizedKeyword)
-        )
-    }, [stores, normalizedKeyword])
+    const categories = useMemo(() => ["all", ...new Set(products.map((product) => product.category).filter(Boolean))], [products])
 
-    const filteredProducts = useMemo(() => {
-        if (!normalizedKeyword) return products
-        return products.filter((p) =>
+    const filteredStores = useMemo(() => stores.filter((store) => {
+        const matchesSearch = !normalizedKeyword ||
+            (store.name || "").toLowerCase().includes(normalizedKeyword) ||
+            (store.category || "").toLowerCase().includes(normalizedKeyword) ||
+            (store.address || "").toLowerCase().includes(normalizedKeyword)
+        const matchesCategory = activeCategory === "all" || (store.category || "").toLowerCase() === activeCategory.toLowerCase()
+        return matchesSearch && matchesCategory
+    }), [stores, normalizedKeyword, activeCategory])
+
+    const filteredProducts = useMemo(() => products.filter((p) => {
+        const matchesSearch = !normalizedKeyword ||
             (p.name || "").toLowerCase().includes(normalizedKeyword) ||
             (p.description || "").toLowerCase().includes(normalizedKeyword) ||
             (p.store?.name || "").toLowerCase().includes(normalizedKeyword) ||
             (p.category || "").toLowerCase().includes(normalizedKeyword)
-        )
-    }, [products, normalizedKeyword])
+        const matchesCategory = activeCategory === "all" || (p.category || "").toLowerCase() === activeCategory.toLowerCase()
+        return matchesSearch && matchesCategory
+    }), [products, normalizedKeyword, activeCategory])
 
     const featuredProducts = useMemo(() =>
         [...(normalizedKeyword ? filteredProducts : products)]
@@ -356,124 +359,83 @@ function Home() {
                         </section>
                     )}
 
-                    {/* ── Search + Heading ── */}
-                    <div className="mb-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    {/* ── Discovery controls ── */}
+                    <section className="ss-discovery-panel mb-10">
                         <div>
-                            <h1 className="text-2xl font-800 tracking-tight text-slate-900">Discover Stores</h1>
-                            <p className="text-slate-500 text-sm mt-1">
-                                {normalizedKeyword
-                                    ? `${filteredStores.length} store${filteredStores.length !== 1 ? "s" : ""} · ${filteredProducts.length} product${filteredProducts.length !== 1 ? "s" : ""} found`
-                                    : `${stores.length} stores · ${products.length} products`}
+                            <p className="ss-eyebrow">SHOP LOCAL, FIND MORE</p>
+                            <h1 className="text-3xl font-800 tracking-tight text-slate-900 sm:text-4xl">Find something good.</h1>
+                            <p className="text-slate-500 text-sm mt-2">
+                                {normalizedKeyword || activeCategory !== "all"
+                                    ? `${filteredProducts.length} product${filteredProducts.length !== 1 ? "s" : ""} matched your selection`
+                                    : `${products.length} products from ${stores.length} local stores`}
                             </p>
                         </div>
-
-                        {/* Search bar */}
-                        <form onSubmit={(e) => e.preventDefault()} className="flex gap-2 w-full sm:w-auto">
-                            <div className="relative flex-1 sm:w-72">
-                                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-base">🔍</span>
-                                <input
-                                    type="text"
-                                    value={keyword}
-                                    onChange={(e) => setKeyword(e.target.value)}
-                                    className="ss-input pl-10 pr-9"
-                                    placeholder="Search stores or products…"
-                                />
-                                {keyword && (
-                                    <button
-                                        type="button"
-                                        onClick={() => setKeyword("")}
-                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 text-base"
-                                    >✕</button>
-                                )}
+                        <form onSubmit={(e) => e.preventDefault()} className="w-full lg:max-w-xl">
+                            <div className="relative">
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">⌕</span>
+                                <input type="text" value={keyword} onChange={(e) => setKeyword(e.target.value)} className="ss-input ss-home-search pl-11 pr-10" placeholder="Search products, stores, or categories…" />
+                                {keyword && <button type="button" onClick={() => setKeyword("")} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700">✕</button>}
                             </div>
                         </form>
-                    </div>
+                    </section>
 
-                    {/* ── Stores horizontal scroll ── */}
+                    {/* ── Category rail ── */}
                     <section className="mb-10">
-                        <div className="flex items-center gap-2 mb-4">
-                            <span className="text-xl">🏪</span>
-                            <h2 className="ss-section-title">Popular Stores</h2>
+                        <div className="flex items-center justify-between gap-4 mb-4">
+                            <div>
+                                <h2 className="ss-section-title">Browse by category</h2>
+                                <p className="ss-section-subtitle">A quicker way to narrow your search</p>
+                            </div>
+                            {activeCategory !== "all" && <button type="button" onClick={() => setActiveCategory("all")} className="text-xs font-700 text-indigo-600 hover:text-indigo-700">Clear filter</button>}
+                        </div>
+                        <div className="ss-category-rail">
+                            {categories.map((category) => (
+                                <button key={category} type="button" onClick={() => setActiveCategory(category)} className={`ss-category-chip ${activeCategory === category ? "is-active" : ""}`}>
+                                    <span>{category === "all" ? "✨" : getCatIcon(category)}</span>
+                                    <span>{category === "all" ? "Everything" : category}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* ── Products take priority ── */}
+                    <section className="mb-12">
+                        <div className="flex items-end justify-between gap-4 mb-5">
+                            <div className="flex items-center gap-3">
+                                <span className="ss-section-mark">✦</span>
+                                <div>
+                                    <h2 className="ss-section-title">{activeCategory === "all" ? "Popular picks" : `${activeCategory} picks`}</h2>
+                                    <p className="ss-section-subtitle">Tap a product for details, or add it straight to your cart.</p>
+                                </div>
+                            </div>
+                            <span className="hidden sm:block text-xs font-700 text-slate-400">{filteredProducts.length} items</span>
                         </div>
 
-                        {filteredStores.length === 0 ? (
-                            <div className="ss-card p-8 text-center text-slate-400">
-                                <p className="text-4xl mb-3">🔍</p>
-                                <p className="font-600">No stores found</p>
-                            </div>
+                        {filteredProducts.length === 0 ? (
+                            <div className="ss-card p-10 text-center text-slate-400"><p className="text-5xl mb-3">📦</p><p className="font-600 text-lg">No products found</p><button type="button" onClick={() => { setKeyword(""); setActiveCategory("all") }} className="mt-3 text-sm font-700 text-indigo-600">Reset filters</button></div>
                         ) : (
-                            <div className="flex gap-4 overflow-x-auto pb-3" style={{ scrollbarWidth: "none" }}>
-                                {filteredStores.map((store) => (
-                                    <Link
-                                        key={store._id}
-                                        to={`/stores/${store._id}`}
-                                        className="group flex-shrink-0 w-64 ss-card p-5 no-underline block"
-                                        style={{ textDecoration: "none" }}
-                                    >
-                                        {/* Store avatar */}
-                                        <div className="flex items-start justify-between mb-3">
-                                            <div
-                                                className="h-12 w-12 rounded-2xl flex items-center justify-center text-2xl"
-                                                style={{ background: "linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%)" }}
-                                            >
-                                                {getCatIcon(store.category)}
-                                            </div>
-                                            <span className={`ss-badge ${store.isOpen ? "ss-badge-open" : "ss-badge-closed"}`}>
-                                                {store.isOpen ? "● Open" : "● Closed"}
-                                            </span>
-                                        </div>
-
-                                        <h3 className="font-800 text-slate-900 text-base leading-snug group-hover:text-indigo-700 transition-colors">
-                                            {store.name}
-                                        </h3>
-                                        <p className="text-xs font-600 uppercase tracking-wider text-slate-400 mt-0.5 capitalize">
-                                            {store.category}
-                                        </p>
-
-                                        <p className="text-sm text-slate-500 mt-3 line-clamp-2 leading-relaxed">
-                                            {store.address}
-                                        </p>
-
-                                        <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                                            <p className="text-xs text-slate-400">by {store.seller?.fullName || "N/A"}</p>
-                                            <span className="text-indigo-500 text-xs font-700 group-hover:translate-x-1 transition-transform inline-block">
-                                                View →
-                                            </span>
-                                        </div>
-                                    </Link>
-                                ))}
+                            <div className="ss-product-grid">
+                                {filteredProducts.map((product) => <ProductCard key={product._id} product={product} cart={cart} onAdd={(p) => { addToCart(p); setCartOpen(true) }} onIncrease={increaseQty} onDecrease={decreaseQty} onClick={() => setSelectedProduct(product)} />)}
                             </div>
                         )}
                     </section>
 
-                    {/* ── Products grid ── */}
+                    {/* ── Stores are supporting navigation ── */}
                     <section>
-                        <div className="flex items-center gap-2 mb-5">
-                            <span className="text-xl">✨</span>
-                            <div>
-                                <h2 className="ss-section-title">All Products</h2>
-                                <p className="ss-section-subtitle">{filteredProducts.length} products available</p>
-                            </div>
+                        <div className="flex items-center justify-between gap-4 mb-5">
+                            <div><h2 className="ss-section-title">Explore stores</h2><p className="ss-section-subtitle">See everything from a seller you like</p></div>
+                            <span className="text-xs font-700 text-slate-400">{filteredStores.length} stores</span>
                         </div>
-
-                        {filteredProducts.length === 0 ? (
-                            <div className="ss-card p-10 text-center text-slate-400">
-                                <p className="text-5xl mb-3">📦</p>
-                                <p className="font-600 text-lg">No products found</p>
-                                <p className="text-sm mt-1">Try a different search term</p>
-                            </div>
+                        {filteredStores.length === 0 ? (
+                            <div className="ss-card p-8 text-center text-slate-400"><p className="text-4xl mb-3">🔍</p><p className="font-600">No stores found</p></div>
                         ) : (
-                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                                {filteredProducts.map((product) => (
-                                    <ProductCard
-                                        key={product._id}
-                                        product={product}
-                                        cart={cart}
-                                        onAdd={(p) => { addToCart(p); setCartOpen(true) }}
-                                        onIncrease={increaseQty}
-                                        onDecrease={decreaseQty}
-                                        onClick={() => setSelectedProduct(product)}
-                                    />
+                            <div className="ss-store-grid">
+                                {filteredStores.map((store) => (
+                                    <Link key={store._id} to={`/stores/${store._id}`} className="ss-store-card group">
+                                        <div className="ss-store-icon">{getCatIcon(store.category)}</div>
+                                        <div className="min-w-0 flex-1"><div className="flex items-start justify-between gap-2"><h3 className="font-800 text-slate-900 text-sm truncate group-hover:text-indigo-700">{store.name}</h3><span className={`ss-badge ${store.isOpen ? "ss-badge-open" : "ss-badge-closed"}`}>{store.isOpen ? "Open" : "Closed"}</span></div><p className="text-xs capitalize text-slate-400 mt-1">{store.category} · {store.address}</p></div>
+                                        <span className="text-indigo-500 font-700">→</span>
+                                    </Link>
                                 ))}
                             </div>
                         )}
@@ -762,9 +724,9 @@ function ProductCard({ product, cart, onAdd, onIncrease, onDecrease, onClick }) 
     const [wished, setWished] = useState(false)
 
     return (
-        <div className="ss-card overflow-hidden flex flex-col cursor-pointer transition-transform hover:-translate-y-1" onClick={onClick}>
+        <article className="ss-product-card ss-card overflow-hidden flex flex-col cursor-pointer" onClick={onClick}>
             {/* Image */}
-            <div className="relative overflow-hidden" style={{ height: 180 }}>
+            <div className="ss-product-image relative overflow-hidden">
                 {product.image ? (
                     <img
                         src={product.image}
@@ -802,7 +764,8 @@ function ProductCard({ product, cart, onAdd, onIncrease, onDecrease, onClick }) 
             </div>
 
             {/* Details */}
-            <div className="p-3.5 flex flex-col flex-1">
+            <div className="p-4 flex flex-col flex-1">
+                <p className="text-[10px] font-700 uppercase tracking-wider text-indigo-500 truncate mb-1">{product.category || "Featured"}</p>
                 <h3 className="font-700 text-slate-900 text-sm leading-snug line-clamp-2 mb-1">{product.name}</h3>
 
                 {product.reviewCount > 0
@@ -834,21 +797,14 @@ function ProductCard({ product, cart, onAdd, onIncrease, onDecrease, onClick }) 
                             type="button"
                             onClick={(e) => { e.stopPropagation(); onAdd(product) }}
                             disabled={product.stock === 0}
-                            className="w-full py-2.5 text-sm font-700 rounded-xl transition-all duration-200 border-2 disabled:opacity-50 disabled:cursor-not-allowed hover:text-white"
-                            style={{
-                                borderColor: "#6366f1",
-                                color: "#6366f1",
-                                background: "transparent"
-                            }}
-                            onMouseEnter={(e) => { e.currentTarget.style.background = "linear-gradient(135deg,#6366f1,#8b5cf6)"; e.currentTarget.style.color = "#fff" }}
-                            onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#6366f1" }}
+                            className="ss-product-add w-full py-2.5 text-sm font-700 rounded-xl transition-all duration-200 border-2 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {product.stock === 0 ? "Out of Stock" : "ADD"}
                         </button>
                     )}
                 </div>
             </div>
-        </div>
+        </article>
     )
 }
 

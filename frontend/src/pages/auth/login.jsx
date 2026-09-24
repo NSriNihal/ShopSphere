@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"
 import Logo from "../../components/common/Logo"
 import { apiUrl } from "../../api/apiUrl"
 import { useAuth } from "../../context/AuthContext"
+import ThemeToggle from "../../components/common/ThemeToggle"
 
 const API_URL = apiUrl("/auth")
 
@@ -91,12 +92,8 @@ function Login() {
     }
 
     return (
-        <div
-            className="min-h-screen flex items-center justify-center px-4 py-12"
-            style={{
-                background: "radial-gradient(circle at 30% 20%, rgba(99,102,241,0.18), transparent 55%), radial-gradient(circle at 80% 80%, rgba(139,92,246,0.14), transparent 50%), linear-gradient(135deg, #f0f2ff 0%, #e8edfb 50%, #f5f0ff 100%)"
-            }}
-        >
+        <div className="ss-auth-shell min-h-screen flex items-center justify-center px-4 py-12">
+            <div className="absolute right-4 top-4 z-10"><ThemeToggle /></div>
             {/* Floating background orbs */}
             <div className="pointer-events-none fixed inset-0 overflow-hidden">
                 <div style={{ position:"absolute", top:"10%", left:"5%", width:320, height:320, borderRadius:"50%", background:"rgba(99,102,241,.07)", filter:"blur(60px)" }} />
@@ -104,14 +101,14 @@ function Login() {
             </div>
 
             <div
-                className="relative w-full max-w-5xl overflow-hidden ss-scale-in"
+                className="ss-auth-card relative w-full max-w-5xl overflow-hidden ss-scale-in"
                 style={{
                     display: "grid",
                     gridTemplateColumns: "1fr 1fr",
                     borderRadius: 28,
                     boxShadow: "0 32px 96px rgba(99,102,241,.22), 0 8px 32px rgba(0,0,0,.08)",
                     border: "1px solid rgba(255,255,255,.7)",
-                    background: "#fff"
+                    background: "var(--surface-card)"
                 }}
             >
                 {/* ── Left brand panel ── */}
