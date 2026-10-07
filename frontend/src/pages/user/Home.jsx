@@ -461,7 +461,7 @@ function Home() {
                 onPointerMove={handleCartPointerMove}
                 onPointerUp={handleCartPointerUp}
                 onPointerCancel={handleCartPointerUp}
-                className="ss-cart-dock fixed z-30 text-white"
+                className="ss-cart-dock fixed z-[9999] text-white"
                 style={cartPosition ? { left: cartPosition.left, top: cartPosition.top } : undefined}
             >
                 {/* Pulse ring when item added */}
@@ -485,13 +485,13 @@ function Home() {
                         type="button"
                         aria-label="Close cart"
                         onClick={() => setCartOpen(false)}
-                        className="fixed inset-0 z-40 ss-fade-in"
+                        className="ss-cart-backdrop fixed inset-0 z-[9998] ss-fade-in"
                         style={{ background: "rgba(0,0,0,.45)", backdropFilter: "blur(2px)" }}
                     />
 
                     {/* Drawer */}
                     <aside
-                        className="ss-cart-drawer fixed z-50 flex flex-col ss-cart-panel"
+                        className="ss-cart-drawer fixed z-[9999] flex flex-col ss-cart-panel"
                         style={{ width: "min(420px, 100vw)" }}
                     >
                         {/* Drawer header */}
