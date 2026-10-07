@@ -355,19 +355,6 @@ function Home() {
                                 {/* Carousel controls */}
                                 {featuredProducts.length > 1 && (
                                     <>
-                                        <button
-                                            type="button"
-                                            aria-label="Previous"
-                                            onClick={(e) => { e.stopPropagation(); setFeaturedIndex((i) => (i - 1 + featuredProducts.length) % featuredProducts.length) }}
-                                            className="absolute right-20 top-5 z-20 rounded-full border border-white/20 bg-black/40 px-3 py-2 text-sm font-700 text-white backdrop-blur-md transition hover:bg-black/60"
-                                        >← Prev</button>
-                                        <button
-                                            type="button"
-                                            aria-label="Next"
-                                            onClick={(e) => { e.stopPropagation(); setFeaturedIndex((i) => (i + 1) % featuredProducts.length) }}
-                                            className="absolute right-5 top-5 z-20 rounded-full border border-white/20 bg-black/40 px-3 py-2 text-sm font-700 text-white backdrop-blur-md transition hover:bg-black/60"
-                                        >Next →</button>
-
                                         {/* Dot indicators */}
                                         <div className="absolute bottom-5 right-6 z-20 flex gap-2">
                                             {featuredProducts.map((_, idx) => (
