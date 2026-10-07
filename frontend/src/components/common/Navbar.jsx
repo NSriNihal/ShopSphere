@@ -47,13 +47,13 @@ function Navbar() {
     const avatarGradient = gradientByRole[user?.role] || "from-indigo-500 to-blue-600"
 
     return (
-        <nav className="ss-navbar sticky top-0 z-50 border-b backdrop-blur-2xl shadow-sm">
-            <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2.5 md:px-6">
+        <nav className="ss-navbar sticky top-0 z-50">
+            <div className="ss-navbar-inner mx-auto flex max-w-7xl items-center justify-between px-4 py-2.5 md:px-6">
 
                 {/* Logo */}
                 <Link to={getDashboardLink()} className="flex items-center gap-2.5 group">
                     <Logo />
-                    <div>
+                    <div className="ss-navbar-brand-copy">
                         <h1 className="text-base font-800 tracking-tight text-slate-900 leading-none">
                             ShopSphere
                         </h1>
@@ -65,7 +65,7 @@ function Navbar() {
 
                 {/* Desktop nav links */}
                 {user && (
-                    <div className="hidden items-center gap-7 md:flex">
+                    <div className="ss-navbar-links hidden items-center gap-2 md:flex">
                         {user.role === "user" && (
                             <>
                                 <Link to="/" className={navLinkCls("/")}>Stores</Link>
@@ -120,13 +120,13 @@ function Navbar() {
 
                             <button
                                 onClick={handleLogout}
-                                className="ss-btn-secondary !py-2 !px-4 !text-xs"
+                                className="ss-navbar-action ss-btn-secondary !py-2 !px-4 !text-xs"
                             >
                                 Logout
                             </button>
                         </>
                     ) : (
-                        <Link to="/login" className="ss-btn-primary !py-2 !px-5 !text-xs">
+                        <Link to="/login" className="ss-navbar-action ss-btn-primary !py-2 !px-5 !text-xs">
                             Sign In
                         </Link>
                     )}
