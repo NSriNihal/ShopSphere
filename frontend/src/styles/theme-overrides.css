@@ -442,8 +442,11 @@ body { background: var(--app-background); }
 }
 .ss-eyebrow { margin: 0 0 .35rem; color: var(--brand-500); font-size: .62rem; font-weight: 800; letter-spacing: .14em; }
 .ss-home-search { min-height: 2.85rem; border-radius: .85rem; box-shadow: none; }
+.ss-category-section { display: grid; gap: .75rem; }
+.ss-category-heading { margin-bottom: 0; }
+.ss-discovery-panel > .ss-category-section { grid-column: 1 / -1; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 1.25rem; }
 .ss-category-rail { display: flex; gap: .65rem; overflow-x: auto; padding: .1rem .1rem .55rem; scrollbar-width: none; }
-.ss-category-chip { display: inline-flex; flex: 0 0 auto; align-items: center; gap: .5rem; padding: .65rem .9rem; color: var(--text-secondary); background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-full); font-size: .8rem; font-weight: 700; text-transform: capitalize; cursor: pointer; transition: transform var(--transition), color var(--transition), background var(--transition), border-color var(--transition), box-shadow var(--transition); }
+.ss-category-chip { display: inline-flex; flex: 0 0 auto; align-items: center; gap: .5rem; padding: .55rem .8rem; color: var(--text-secondary); background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-full); font-size: .78rem; font-weight: 700; text-transform: capitalize; cursor: pointer; transition: transform var(--transition), color var(--transition), background var(--transition), border-color var(--transition), box-shadow var(--transition); }
 .ss-category-chip:hover { transform: translateY(-2px); color: var(--brand-600); border-color: var(--brand-400); box-shadow: var(--shadow-sm); }
 .ss-category-chip.is-active { color: #fff; background: linear-gradient(135deg, var(--brand-500), #8b5cf6); border-color: transparent; box-shadow: 0 5px 16px rgba(99,102,241,.3); }
 .ss-section-mark { display: grid; width: 2.45rem; height: 2.45rem; place-items: center; color: var(--brand-600); background: var(--brand-50); border-radius: .9rem; font-size: 1.1rem; }
@@ -496,7 +499,9 @@ html.dark .ss-section-mark, html.dark .ss-store-icon { background: #252b53; }
 
 @media (min-width: 640px) { .ss-product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; } }
 @media (min-width: 1024px) { .ss-product-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.5rem; } .ss-product-image { height: 13rem; } }
-@media (max-width: 639px) { .ss-discovery-panel { grid-template-columns: 1fr; gap: .85rem; padding: 1rem; } .ss-product-image { height: 10.5rem; } }
+@media (min-width: 768px) { .ss-category-rail { padding-bottom: .1rem; } }
+@media (max-width: 767px) { .ss-discovery-panel > .ss-category-section { grid-template-columns: 1fr; gap: .55rem; } }
+@media (max-width: 639px) { .ss-discovery-panel { grid-template-columns: 1fr; gap: .85rem; padding: 1rem; } .ss-category-heading { align-items: flex-end; } .ss-product-image { height: 10.5rem; } }
 
 /* Dark equivalents for the existing Tailwind utility palette. */
 html.dark .bg-white, html.dark .bg-white\/90, html.dark .bg-white\/75 { background-color: var(--surface-card) !important; }

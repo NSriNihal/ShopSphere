@@ -404,24 +404,19 @@ function Home() {
                                 {keyword && <button type="button" onClick={() => setKeyword("")} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700">✕</button>}
                             </div>
                         </form>
-                    </section>
-
-                    {/* ── Category rail ── */}
-                    <section className="mb-10">
-                        <div className="flex items-center justify-between gap-4 mb-4">
-                            <div>
+                        <div className="ss-category-section">
+                            <div className="ss-category-heading flex items-center justify-between gap-4">
                                 <h2 className="ss-section-title">Browse by category</h2>
-                                <p className="ss-section-subtitle">A quicker way to narrow your search</p>
+                                {activeCategory !== "all" && <button type="button" onClick={() => setActiveCategory("all")} className="text-xs font-700 text-indigo-600 hover:text-indigo-700">Clear filter</button>}
                             </div>
-                            {activeCategory !== "all" && <button type="button" onClick={() => setActiveCategory("all")} className="text-xs font-700 text-indigo-600 hover:text-indigo-700">Clear filter</button>}
-                        </div>
-                        <div className="ss-category-rail">
-                            {categories.map((category) => (
-                                <button key={category} type="button" onClick={() => setActiveCategory(category)} className={`ss-category-chip ${activeCategory === category ? "is-active" : ""}`}>
-                                    <span>{category === "all" ? "✨" : getCatIcon(category)}</span>
-                                    <span>{category === "all" ? "Everything" : category}</span>
-                                </button>
-                            ))}
+                            <div className="ss-category-rail">
+                                {categories.map((category) => (
+                                    <button key={category} type="button" onClick={() => setActiveCategory(category)} className={`ss-category-chip ${activeCategory === category ? "is-active" : ""}`}>
+                                        <span>{category === "all" ? "✨" : getCatIcon(category)}</span>
+                                        <span>{category === "all" ? "Everything" : category}</span>
+                                    </button>
+                                ))}
+                            </div>
                         </div>
                     </section>
 
