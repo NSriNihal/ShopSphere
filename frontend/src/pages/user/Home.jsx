@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import MainLayout from "../../layouts/MainLayout"
 import { apiUrl } from "../../api/apiUrl"
@@ -60,7 +60,9 @@ function Home() {
     const [loading, setLoading] = useState(true)
     const [message, setMessage] = useState("")
     const [cartPulse, setCartPulse] = useState(false)
+    const [cartPosition, setCartPosition] = useState(null)
     const [selectedProduct, setSelectedProduct] = useState(null)
+    const cartDrag = useRef({ dragging: false, moved: false, offsetX: 0, offsetY: 0 })
 
     const fetchStores = async () => {
         setLoading(true)
@@ -198,6 +200,31 @@ function Home() {
     const grandTotal = itemsTotal + deliveryCharge + handlingCharge
     const canPlaceOrder = cartItems.length > 0 && addressSelected
     const normalizedKeyword = keyword.trim().toLowerCase()
+
+    const handleCartPointerDown = (event) => {
+        const bounds = event.currentTarget.getBoundingClientRect()
+        cartDrag.current = {
+            dragging: true,
+            moved: false,
+            offsetX: event.clientX - bounds.left,
+            offsetY: event.clientY - bounds.top
+        }
+        event.currentTarget.setPointerCapture(event.pointerId)
+    }
+
+    const handleCartPointerMove = (event) => {
+        if (!cartDrag.current.dragging) return
+        const size = event.currentTarget.getBoundingClientRect()
+        const left = Math.max(8, Math.min(window.innerWidth - size.width - 8, event.clientX - cartDrag.current.offsetX))
+        const top = Math.max(8, Math.min(window.innerHeight - size.height - 8, event.clientY - cartDrag.current.offsetY))
+        if (Math.abs(event.movementX) > 1 || Math.abs(event.movementY) > 1) cartDrag.current.moved = true
+        setCartPosition({ left, top })
+    }
+
+    const handleCartPointerUp = (event) => {
+        cartDrag.current.dragging = false
+        event.currentTarget.releasePointerCapture?.(event.pointerId)
+    }
 
     const categories = useMemo(() => ["all", ...new Set(products.map((product) => product.category).filter(Boolean))], [products])
 
@@ -446,8 +473,14 @@ function Home() {
             {/* ── Floating cart button ── */}
             <button
                 type="button"
-                onClick={() => setCartOpen(true)}
-                className="ss-cart-dock fixed z-30 flex items-center gap-3 text-white"
+                aria-label={`Open cart${cartCount > 0 ? `, ${cartCount} items` : ""}`}
+                onClick={() => { if (!cartDrag.current.moved) setCartOpen(true); cartDrag.current.moved = false }}
+                onPointerDown={handleCartPointerDown}
+                onPointerMove={handleCartPointerMove}
+                onPointerUp={handleCartPointerUp}
+                onPointerCancel={handleCartPointerUp}
+                className="ss-cart-dock fixed z-30 text-white"
+                style={cartPosition ? { left: cartPosition.left, top: cartPosition.top } : undefined}
             >
                 {/* Pulse ring when item added */}
                 {cartPulse && (
@@ -457,14 +490,9 @@ function Home() {
                     />
                 )}
                 <span className="ss-cart-dock-icon">🛒</span>
-                <span className="text-left">
-                    <span className="font-800 text-sm block leading-none">{cartCount > 0 ? "Your cart" : "Start a cart"}</span>
-                    <span className="text-xs font-500 opacity-85 block mt-1">{cartCount > 0 ? `${cartCount} item${cartCount > 1 ? "s" : ""} · ₹${grandTotal}` : "Add a product to begin"}</span>
-                </span>
                 {cartCount > 0 && (
                     <span className="ss-cart-dock-count">{cartCount}</span>
                 )}
-                <span className="ss-cart-dock-action">View cart <span aria-hidden="true">→</span></span>
             </button>
 
             {/* ── Cart drawer ── */}
@@ -481,7 +509,7 @@ function Home() {
 
                     {/* Drawer */}
                     <aside
-                        className="ss-cart-drawer fixed right-0 top-0 h-full z-50 flex flex-col ss-drawer"
+                        className="ss-cart-drawer fixed z-50 flex flex-col ss-cart-panel"
                         style={{ width: "min(420px, 100vw)" }}
                     >
                         {/* Drawer header */}
