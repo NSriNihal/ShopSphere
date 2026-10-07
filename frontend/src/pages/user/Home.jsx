@@ -387,11 +387,11 @@ function Home() {
                     )}
 
                     {/* ── Discovery controls ── */}
-                    <section className="ss-discovery-panel mb-10">
+                    <section className="ss-discovery-panel mb-8">
                         <div>
                             <p className="ss-eyebrow">SHOP LOCAL, FIND MORE</p>
-                            <h1 className="text-3xl font-800 tracking-tight text-slate-900 sm:text-4xl">Find something good.</h1>
-                            <p className="text-slate-500 text-sm mt-2">
+                            <h1 className="text-2xl font-800 tracking-tight text-slate-900 sm:text-3xl">Find something good.</h1>
+                            <p className="text-slate-500 text-xs mt-1.5">
                                 {normalizedKeyword || activeCategory !== "all"
                                     ? `${filteredProducts.length} product${filteredProducts.length !== 1 ? "s" : ""} matched your selection`
                                     : `${products.length} products from ${stores.length} local stores`}

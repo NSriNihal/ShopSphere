@@ -431,17 +431,17 @@ body { background: var(--app-background); }
 /* ─── Home discovery layout ─────────────────────────────────── */
 .ss-discovery-panel {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(280px, .85fr);
+  grid-template-columns: minmax(0, 1fr) minmax(320px, .72fr);
   align-items: end;
-  gap: 2rem;
-  padding: 1.75rem;
-  background: linear-gradient(135deg, color-mix(in srgb, var(--surface-card) 88%, #e0e7ff), var(--surface-card));
+  gap: 1.25rem;
+  padding: 1.15rem 1.25rem;
+  background: color-mix(in srgb, var(--surface-card) 94%, #e0e7ff);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
 }
-.ss-eyebrow { margin: 0 0 .55rem; color: var(--brand-500); font-size: .68rem; font-weight: 800; letter-spacing: .16em; }
-.ss-home-search { min-height: 3.4rem; border-radius: var(--radius-full); box-shadow: var(--shadow-sm); }
+.ss-eyebrow { margin: 0 0 .35rem; color: var(--brand-500); font-size: .62rem; font-weight: 800; letter-spacing: .14em; }
+.ss-home-search { min-height: 2.85rem; border-radius: .85rem; box-shadow: none; }
 .ss-category-rail { display: flex; gap: .65rem; overflow-x: auto; padding: .1rem .1rem .55rem; scrollbar-width: none; }
 .ss-category-chip { display: inline-flex; flex: 0 0 auto; align-items: center; gap: .5rem; padding: .65rem .9rem; color: var(--text-secondary); background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-full); font-size: .8rem; font-weight: 700; text-transform: capitalize; cursor: pointer; transition: transform var(--transition), color var(--transition), background var(--transition), border-color var(--transition), box-shadow var(--transition); }
 .ss-category-chip:hover { transform: translateY(-2px); color: var(--brand-600); border-color: var(--brand-400); box-shadow: var(--shadow-sm); }
@@ -496,7 +496,7 @@ html.dark .ss-section-mark, html.dark .ss-store-icon { background: #252b53; }
 
 @media (min-width: 640px) { .ss-product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; } }
 @media (min-width: 1024px) { .ss-product-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.5rem; } .ss-product-image { height: 13rem; } }
-@media (max-width: 639px) { .ss-discovery-panel { grid-template-columns: 1fr; gap: 1.25rem; padding: 1.35rem; } .ss-product-image { height: 10.5rem; } }
+@media (max-width: 639px) { .ss-discovery-panel { grid-template-columns: 1fr; gap: .85rem; padding: 1rem; } .ss-product-image { height: 10.5rem; } }
 
 /* Dark equivalents for the existing Tailwind utility palette. */
 html.dark .bg-white, html.dark .bg-white\/90, html.dark .bg-white\/75 { background-color: var(--surface-card) !important; }
